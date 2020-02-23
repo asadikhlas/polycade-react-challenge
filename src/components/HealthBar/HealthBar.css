@@ -1,0 +1,6 @@
+.healthBar-container{
+    border: solid 1px black;
+    width: 200px;
+    background-color: white;
+    height: 20px
+}
