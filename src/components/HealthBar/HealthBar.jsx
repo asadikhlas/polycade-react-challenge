@@ -21,7 +21,7 @@ const HealthBar = ({ health, showHealth }) => {
 };
 
 HealthBar.propTypes = {
-	health: PropTypes.number,
+	health: PropTypes.any,
 	showHealth: PropTypes.bool
 };
 
