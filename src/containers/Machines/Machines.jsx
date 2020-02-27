@@ -4,22 +4,31 @@ import PropTypes from 'prop-types';
 import Header from '../../components/Header/Header';
 import MachinesContainer from '../../components/MachinesContainer';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { fetchMachines, fetchMachine, updateMachine, updateMachineName } from '../../store/actions/machinesAction';
-import { updateMachinesHealth, updateMachineHealth } from '../../store/actions/healthAction'
-
+import {
+	fetchMachines,
+	fetchMachine,
+	updateMachine,
+	updateMachineName
+} from '../../store/actions/machinesAction';
+import {
+	updateMachinesHealth,
+	updateMachineHealth
+} from '../../store/actions/healthAction';
 
 class Machines extends Component {
-
-	componentDidMount(){
+	componentDidMount () {
 		this.handleGetMachines();
 	}
-	
-	startWebSocket = (type) => {
+
+	startWebSocket = type => {
 		let socket = new WebSocket(process.env.REACT_APP_WEBSOCKET_API);
-		socket.onmessage = type === 'machines' ? this.getMachinesSocketMessage : this.getMachineSocketMessage;
+		socket.onmessage =
+			type === 'machines'
+				? this.getMachinesSocketMessage
+				: this.getMachineSocketMessage;
 	};
 
-	getMachinesSocketMessage = (event) => {
+	getMachinesSocketMessage = event => {
 		const data = JSON.parse(event.data);
 
 		if (data.type === 'HEALTH_UPDATE') {
@@ -35,7 +44,7 @@ class Machines extends Component {
 		}
 	};
 
-	getMachineSocketMessage = (event) => {
+	getMachineSocketMessage = event => {
 		const data = JSON.parse(event.data);
 		const machine = this.props.machine;
 
@@ -43,40 +52,35 @@ class Machines extends Component {
 			machine.health = data.health;
 			this.props.updateMachineHealth(machine);
 		}
-	}
-
+	};
 
 	handleGetMachines = () => {
 		this.props.fetchMachines();
 		this.startWebSocket('machines');
-	}
+	};
 
-	handleNameChange = (e) => {
+	handleNameChange = e => {
 		let machineChange = {
 			...this.props.machine,
 			name: e.target.value
 		};
 		this.props.updateMachineName(machineChange);
-	}
+	};
 
-	handleGetMachine = (machineId) => {
+	handleGetMachine = machineId => {
 		this.props.fetchMachine(machineId);
 		this.startWebSocket('machine');
-	}
+	};
 
-	handleMachineUpdate = (e) => {
+	handleMachineUpdate = e => {
 		e.preventDefault();
 		this.props.updateMachine(this.props.machine);
-	}
-
-
+	};
 
 	render () {
 		return (
 			<Router>
-				<Header
-					onHandleGetMachines={this.handleGetMachines}
-				/>
+				<Header onHandleGetMachines={this.handleGetMachines} />
 				<MachinesContainer
 					onHandleMachineUpdate={this.handleMachineUpdate}
 					onHandleGetMachine={this.handleGetMachine}
@@ -91,7 +95,7 @@ class Machines extends Component {
 	}
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
 	return {
 		machines: state.machineStore.machines,
 		machine: state.machineStore.machine,
